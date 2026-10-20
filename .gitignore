@@ -30,3 +30,4 @@ dist-ssr
 *.sw?
 # Agent workflow artifacts (design/task/review files)
 .agents/
+.md
