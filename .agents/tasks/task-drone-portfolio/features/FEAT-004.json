@@ -1,0 +1,27 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "The sticky animated navbar and footer (design §2 sections 1 and 9), the full App.jsx composition wiring Backdrop + Navbar + all sections + Footer (§2/§6), and a final integration pass for responsiveness, accessibility, performance, and the three device tiers (§5). Depends on FEAT-001/002/003 (imports every section, the Backdrop, and the hooks). This feature makes the site a complete, runnable single page and must run last.",
+  "status": "pending",
+  "steps": [
+    "Create src/components/layout/Navbar.jsx: a fixed <header>; left callsign/name mark (mono), nav links from portfolio.nav as real <a href=\"#id\"> with aria-current active state driven by useActiveSection, and a live mono clock / SYS NOMINAL status chip; transparent at top -> .glass + bottom hud.line border after scroll via Framer Motion useScroll; mobile hamburger <button aria-expanded aria-controls=\"mobile-menu\"> opening a full-screen HUD overlay menu (id=\"mobile-menu\") that uses useFocusTrap (Esc closes and returns focus to the toggle). Smooth-scroll relies on anchors + CSS scroll-behavior.",
+    "Create src/components/layout/Footer.jsx: a <footer> mono strip with callsign, '© {year} {name}', 'BUILT WITH REACT · THREE.JS', a back-to-top link (#top), and a faint animated grid baseline (aria-hidden).",
+    "Replace src/App.jsx with the §2 composition: <Backdrop/> then <Navbar/> then <main> containing Hero, About, Skills, Experience, Missions, Gallery, Contact (each a <section id aria-labelledby>), then <Footer/>. Leave src/main.jsx and its <React.StrictMode> unchanged. Remove any scratch wiring left from FEAT-001's verification.",
+    "Integration pass against design §5: confirm semantic landmarks (header/main/footer, section aria-labelledby, <h2> headings); decorative HUD layers are aria-hidden + pointer-events-none; nav links, mobile menu (open/trap/Esc/focus-return), contact form, and mission expanders are keyboard-reachable with visible focus rings; alt text comes from data (alt=\"\" for placeholders); hud.dim is used only for labels, not body copy. Confirm the Three bundle stays code-split and does not block first paint, and that reduced-motion disables infinite animations + telemetry ticking + Framer loops.",
+    "Verify the three device tiers behave: desktop (full canvas + cursor tilt), narrow width or low hardwareConcurrency/deviceMemory (canvas with reduced dpr, parallax off), and prefers-reduced-motion or no-WebGL (StaticHudHero, no canvas). Fix any seams between sections (spacing rhythm, duplicate ids, Backdrop z-index vs content).",
+    "Run the final build and a preview smoke check; fix any issues before marking complete."
+  ],
+  "acceptance_criteria": [
+    "`npm run build` exits 0 with the Three.js bundle code-split into its own chunk.",
+    "`npm run dev`/`npm run preview` shows the complete single page scrolling through Hero -> About -> Skills -> Experience -> Missions -> Gallery -> Contact -> Footer in order, with no console errors.",
+    "The sticky navbar is transparent at top and gains the glass treatment + border after scroll; nav links smooth-scroll and the active link highlights (aria-current) per section; the mobile menu opens, traps focus, and closes on Esc restoring focus to the toggle.",
+    "The page is usable by keyboard end to end (nav, mobile menu, contact form, mission expanders) with visible focus; decorative layers are aria-hidden.",
+    "The three device tiers render as specified (desktop canvas, downgraded canvas on narrow/low-power, StaticHudHero under reduced-motion/no-WebGL)."
+  ],
+  "verification": [
+    "Run `npm run build`; confirm exit 0 and a separate three/@react-three chunk in the output.",
+    "Run `npm run preview` (or `npm run dev`); scroll the full page at desktop and mobile widths confirming section order, smooth-scroll + active-nav highlight, sticky-navbar glass-on-scroll, mobile menu focus trap + Esc, and zero console errors; with DevTools force prefers-reduced-motion and confirm StaticHudHero + no infinite animation + no telemetry ticking."
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

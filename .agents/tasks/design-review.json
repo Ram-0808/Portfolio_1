@@ -1,0 +1,35 @@
+{
+  "verdict": "APPROVED",
+  "findings": [
+    {
+      "id": 1,
+      "severity": "NIT",
+      "title": "Device tier is computed once and never re-evaluated on resize/orientation change",
+      "where": "§3 Device tiering (useDeviceTier reads window.innerWidth once); §5 Tier 2 (width<=768)",
+      "problem": "useDeviceTier reads window.innerWidth at mount; narrowing a desktop window below 768px or rotating a tablet keeps the initial tier. Not a correctness blocker since the hero is decorative and tier deltas are subtle, but the intended behavior is unstated.",
+      "fix": "State explicitly that tiering is computed once at mount with no resize listener (acceptable for a decorative hero), OR add a debounced resize listener that recomputes computeTier(...). Pick one and note it in §3."
+    },
+    {
+      "id": 2,
+      "severity": "NIT",
+      "title": "Backdrop grid example markup double-specifies the background size",
+      "where": "§1 Backdrop grid composition example: bg-grid-fine [background-size:40px_40px] animate-grid-drift",
+      "problem": "theme.extend.backgroundSize['grid-fine'] already defines 40px 40px and is exposed as a size utility; the arbitrary [background-size:40px_40px] in the example duplicates it. Harmless (same value) but muddies the 'key grid-fine is both image and size' explanation.",
+      "fix": "Rely on the generated size utility OR keep only the arbitrary [background-size:...], not both. Drop the arbitrary value and let the backgroundSize theme entry apply, or state in one line which utility sets the size."
+    },
+    {
+      "id": 3,
+      "severity": "NIT",
+      "title": "Navbar live clock / SYS NOMINAL status chip has no defined data source or update rule",
+      "where": "§2 Navbar (live mono 'clock'/SYS NOMINAL status chip on the right)",
+      "problem": "Unlike the hero telemetry (now fully specified), the clock's format (UTC vs local, HH:MM:SS, Zulu), update cadence, and reduced-motion behavior are unspecified. A per-second setInterval is a motion concern the reduced-motion section does not mention.",
+      "fix": "Specify clock format and cadence (e.g. HH:MM:SS local or Z UTC, updated every 1000ms, cleared on unmount) and state that under prefers-reduced-motion it freezes or renders a static SYS NOMINAL chip without a ticking time. One sentence in §2."
+    }
+  ],
+  "counts": {
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "NIT": 3
+  },
+  "reviewDoc": "/Users/raghu/Desktop/Portfolio/.agents/tasks/design-review.md"
+}

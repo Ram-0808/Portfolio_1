@@ -1,0 +1,28 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "All content sections below the hero (design §2 sections 3-8): About, Skills, Experience 'flight log', Missions 'mission log' (with interactive inline-expand cards), Gallery of placeholder aerial tiles, and the Contact COMMS form with client-side validation state. Depends on FEAT-001 (UI primitives, portfolio.js data, validateContact, useReducedMotion). Independent of FEAT-002 (the hero subsystem) — these sections render regardless of the 3D path. Each section is a <section id aria-labelledby> consuming only portfolio.js data.",
+  "status": "pending",
+  "steps": [
+    "Create src/components/sections/About.jsx (#about): two columns — a framed HudFrame 'operator profile' card (avatar placeholder block + mono spec sheet ROLE/BASE/STATUS/FLIGHT HOURS) and bio prose (max-w-65ch, text-hud-mid) + a quick-stats strip from about.stats; Framer Motion reveal gated by useReducedMotion; <h2> via SectionHeading with aria-labelledby.",
+    "Create src/components/sections/Skills.jsx (#skills): a responsive grid (grid-cols-1 sm:grid-cols-2 lg:grid-cols-3) of HudCard, one per skillGroup, each with a mono group header and its skills rendered via SignalBars (level 0..5) and/or Tag; data from skillGroups.",
+    "Create src/components/sections/Experience.jsx (#experience): a 'Flight Log' vertical timeline — central cyan spine with status-dot node markers; each entry a .glass card with mono SORTIE id/role/org/dates and highlight bullets; alternating sides at >=md, single column <md; entries reveal sequentially (gated by useReducedMotion). Data from experience (status current|past).",
+    "Create src/components/sections/Gallery.jsx (#gallery): a uniform grid grid-cols-2 md:grid-cols-3 gap-3 of aspect-[4/3] AerialTile elements (define AerialTile in this file): distinct CSS gradient + topographic inline-SVG lines + a coordinate caption overlay revealed on hover; image:null -> gradient placeholder with alt=\"\", real image path -> alt from data. Data from gallery.",
+    "Create src/components/sections/Missions.jsx (#missions) with a MissionCard: responsive grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3; each card = gradient aerial placeholder + grid/CornerBrackets overlay, 'MISSION //' id, title, StatusChip, objective, Tag row, and a real <button aria-expanded> 'VIEW LOG' that inline-expands a collapsible region holding the full objective + tech list (local useState per card). CLASSIFIED cards render the button aria-disabled reading 'ACCESS DENIED' with redacted (reduced-opacity, hud.dim + lock glyph) styling and do not expand. Data from projects.",
+    "Create src/components/sections/Contact.jsx (#contact): left COMMS form (name/email/message) with HUD-styled inputs and controlled state; submit handler calls validateContact and blocks the simulated send unless valid; each field sets aria-invalid only when errors[field] exists and aria-describedby points at its error text; on invalid, focus moves to the first errored field; on valid, show a role=\"status\" aria-live=\"polite\" success state ('SIGNAL SENT'); focus-visible:ring-hud-cyan on inputs. Right column = social/comms rows from contact.socials with status dots. No network request.",
+    "Run `npm run build`; fix any errors before marking complete."
+  ],
+  "acceptance_criteria": [
+    "`npm run build` exits 0.",
+    "On `npm run dev`, About/Skills/Experience/Gallery/Missions/Contact each render entirely from src/data/portfolio.js with no hardcoded content strings, responsive at mobile and desktop widths, and no broken images (placeholders are CSS gradient / inline SVG).",
+    "MissionCard VIEW LOG expands/collapses via keyboard (button aria-expanded toggles a region); CLASSIFIED cards show a disabled 'ACCESS DENIED' affordance that does not expand.",
+    "Contact form blocks an invalid submit, shows per-field errors with aria-invalid/aria-describedby, moves focus to the first errored field, and on valid input shows the aria-live success state; no network request is made.",
+    "Reveal animations run once and are instant under prefers-reduced-motion."
+  ],
+  "verification": [
+    "Run `npm run build` and confirm exit 0.",
+    "Run `npm run dev`; at mobile and desktop widths verify each section renders from data with intact placeholders and no console errors; keyboard-test MissionCard expand/collapse and the CLASSIFIED disabled state; submit the contact form empty (expect blocked + errors + focus move) then valid (expect SIGNAL SENT); toggle prefers-reduced-motion and confirm reveals are instant."
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

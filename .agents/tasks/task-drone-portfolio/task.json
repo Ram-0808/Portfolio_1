@@ -1,0 +1,7 @@
+{
+  "task_id": "task-drone-portfolio",
+  "task_description": "Build a frontend-only, standout single-page portfolio for a drone-technology professional, themed as a dark aerospace ground-control station (HUD/mission-control). React 18 + Vite + Tailwind + Framer Motion + @react-three/fiber/drei/three. All content driven by a single dummy-data file for later client swap-in. Interactive procedural 3D drone hero with graceful degradation, every required section, sticky animated navbar + footer, responsive + accessible + performant. Follows the approved design at .agents/tasks/design.md.",
+  "status": "pending",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004"],
+  "blocked_reason": null
+}
