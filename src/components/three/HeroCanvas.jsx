@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Canvas } from '@react-three/fiber'
 import SceneRig from './SceneRig'
 
@@ -6,12 +7,20 @@ import SceneRig from './SceneRig'
 // postprocessing, no drei Environment — the glow look comes from emissive
 // materials + plain lights so the scene stays fully offline/asset-free.
 //
-// Props: { tier, mouse } — tier.dpr clamps the device pixel ratio per device
-// tier; tier.parallax / tier.rotorSpeed drive the SceneRig; mouse is the
-// normalized pointer from useMousePosition.
-export default function HeroCanvas({ tier, mouse }) {
+// Props: { tier, mouse, frameloop }
+//   tier.dpr      — clamps the device pixel ratio per device tier.
+//   tier.parallax / tier.rotorSpeed drive the SceneRig.
+//   mouse         — normalized pointer from useMousePosition.
+//   frameloop     — 'always' while the hero is on-screen (rotors/tilt/Float run
+//                   at ~60fps); 'demand' when the hero is scrolled out of view,
+//                   which renders the last frame once and then idles so the
+//                   useFrame work and GPU compositing stop competing with
+//                   scrolling. Memoized so pointer-driven Hero re-renders don't
+//                   tear down and rebuild the R3F scene.
+function HeroCanvas({ tier, mouse, frameloop = 'always' }) {
   return (
     <Canvas
+      frameloop={frameloop}
       dpr={tier.dpr}
       gl={{ antialias: true, powerPreference: 'high-performance' }}
       camera={{ position: [0, 0.8, 5], fov: 45 }}
@@ -24,3 +33,5 @@ export default function HeroCanvas({ tier, mouse }) {
     </Canvas>
   )
 }
+
+export default memo(HeroCanvas)

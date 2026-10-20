@@ -9,8 +9,10 @@ export default function Backdrop() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-[-1] overflow-hidden bg-hud-void"
     >
-      {/* Animated fine grid (per design §1 finding 10). */}
-      <div className="absolute inset-0 bg-grid-fine [background-size:40px_40px] animate-grid-drift opacity-[0.15]" />
+      {/* Animated fine grid (per design §1 finding 10). Oversized by one 40px
+          cell on every edge so the composited translate3d drift never exposes
+          an edge; the parent clips the overflow. GPU-composited, no repaint. */}
+      <div className="absolute -inset-10 bg-grid-fine [background-size:40px_40px] animate-grid-drift opacity-[0.15]" />
 
       {/* Radial-fade glow from the top. */}
       <div className="absolute inset-0 bg-radial-fade" />

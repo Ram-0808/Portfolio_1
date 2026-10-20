@@ -35,7 +35,10 @@ export default {
         scanline: { '0%': { transform: 'translateY(-100%)' }, '100%': { transform: 'translateY(100%)' } },
         'radar-sweep': { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
         'glow-pulse': { '0%,100%': { opacity: '0.55' }, '50%': { opacity: '1' } },
-        'grid-drift': { '0%': { backgroundPosition: '0 0' }, '100%': { backgroundPosition: '40px 40px' } },
+        // Composite-friendly: translate an oversized grid layer by exactly one
+        // 40px cell so it loops seamlessly on the GPU instead of repainting the
+        // background-position every frame. Visually identical to the old drift.
+        'grid-drift': { '0%': { transform: 'translate3d(0, 0, 0)' }, '100%': { transform: 'translate3d(40px, 40px, 0)' } },
         flicker: { '0%,19%,21%,80%,82%,100%': { opacity: '1' }, '20%,81%': { opacity: '0.7' } },
         'blink': { '0%,100%': { opacity: '1' }, '50%': { opacity: '0.2' } },
       },

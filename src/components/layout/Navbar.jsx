@@ -76,7 +76,7 @@ export default function Navbar() {
     <motion.header
       initial={false}
       animate={{ opacity: 1 }}
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+      className={`glass-fixed fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
         scrolled ? 'glass border-b border-hud-line' : 'border-b border-transparent'
       }`}
     >

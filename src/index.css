@@ -73,10 +73,27 @@ body {
     border: 1px solid #1c2a36;
   }
 
+  /* Same glass look, but promoted to its own compositor layer so the fixed
+     navbar's backdrop blur is cached on the GPU instead of being re-sampled
+     against the whole page on every scroll frame. Visuals are unchanged. */
+  .glass-fixed {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
   /* cyanSoft-family glow as raw hex */
   .text-glow {
     text-shadow: 0 0 12px rgba(0, 229, 212, 0.5);
   }
+}
+
+/* Pause all decorative/infinite animations while the tab is hidden (toggled by
+   useDocumentHidden). Frees the main thread/GPU when the page isn't visible;
+   no effect while the tab is active, so the look is unchanged. */
+[data-anim-paused] *,
+[data-anim-paused] *::before,
+[data-anim-paused] *::after {
+  animation-play-state: paused !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

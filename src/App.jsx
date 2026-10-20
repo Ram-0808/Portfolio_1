@@ -1,6 +1,7 @@
 import Backdrop from './components/layout/Backdrop'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
+import useDocumentHidden from './hooks/useDocumentHidden'
 import Hero from './components/sections/Hero'
 import About from './components/sections/About'
 import Skills from './components/sections/Skills'
@@ -14,6 +15,9 @@ import Contact from './components/sections/Contact'
 // the Footer. Each section owns its own <section id aria-labelledby> + <h2>
 // (Hero owns #top), so App adds no extra wrappers or ids.
 export default function App() {
+  // Pause infinite decorative animations while the tab is hidden (perf only).
+  useDocumentHidden()
+
   return (
     <>
       <Backdrop />

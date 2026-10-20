@@ -3,10 +3,17 @@ import data from '../../data/portfolio'
 import useDeviceTier from '../../hooks/useDeviceTier'
 import useTelemetry from '../../hooks/useTelemetry'
 import useMousePosition from '../../hooks/useMousePosition'
+import useInView from '../../hooks/useInView'
 import HeroOverlay from './HeroOverlay'
 import StaticHudHero from '../three/StaticHudHero'
 import DroneSilhouette from '../three/DroneSilhouette'
 import CanvasErrorBoundary from '../three/CanvasErrorBoundary'
+
+// Decorative stand-in for the canvas while it loads or if WebGL throws.
+// Hoisted to module scope so it is a single stable element reference and never
+// re-created per Hero render (which would otherwise churn the Suspense/error
+// fallback on every pointer-driven re-render while parallax is active).
+const canvasFallback = <DroneSilhouette className="absolute inset-0" />
 
 // The Three.js bundle is code-split here: React.lazy + dynamic import keeps the
 // WebGL chunk out of the initial payload so the hero text/telemetry paint
@@ -27,7 +34,10 @@ const HeroCanvas = lazy(() => import('../three/HeroCanvas'))
 export default function Hero() {
   const { identity } = data
   const tier = useDeviceTier()
-  const telemetry = useTelemetry(data.hero.telemetry)
+  // Track whether the hero is on-screen so the WebGL render loop and the
+  // telemetry interval only run while the hero is actually visible.
+  const [sectionRef, inView] = useInView({ rootMargin: '200px 0px' })
+  const telemetry = useTelemetry(data.hero.telemetry, inView)
   // Only track the pointer when parallax is active (tier 1) — binds nothing otherwise.
   const mouse = useMousePosition(tier.parallax)
 
@@ -35,11 +45,13 @@ export default function Hero() {
     return <StaticHudHero identity={identity} telemetry={telemetry} />
   }
 
-  // Decorative stand-in for the canvas while it loads or if WebGL throws.
-  const canvasFallback = <DroneSilhouette className="absolute inset-0" />
+  // Run the R3F loop only while the hero is visible; idle (render-on-demand)
+  // once it scrolls out of view so rotors/tilt/Float stop burning frames.
+  const frameloop = inView ? 'always' : 'demand'
 
   return (
     <section
+      ref={sectionRef}
       id="top"
       aria-labelledby="hero-heading"
       className="relative min-h-screen overflow-hidden"
@@ -52,7 +64,7 @@ export default function Hero() {
       <div aria-hidden="true" className="absolute inset-0">
         <CanvasErrorBoundary fallback={canvasFallback}>
           <Suspense fallback={canvasFallback}>
-            <HeroCanvas tier={tier} mouse={mouse} />
+            <HeroCanvas tier={tier} mouse={mouse} frameloop={frameloop} />
           </Suspense>
         </CanvasErrorBoundary>
       </div>
