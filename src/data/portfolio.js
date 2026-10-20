@@ -9,7 +9,7 @@
 
 export default {
   identity: {
-    name: 'Alex Carter',
+    name: 'Samson',
     callsign: 'AC-01', // shown as logo mark / mono tag
     role: 'Drone Systems Engineer / UAV Specialist',
     tagline: 'Designing, flying, and automating unmanned aerial systems — from firmware to flight line.',
